@@ -1,35 +1,98 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
+using System.IO;
 
 namespace Collections
 {
     class Program
     {
         static Random rnd = new Random();
-        
+
         static void Main(string[] args)
         {
-            //Djuren();
-            Pandemic();
+            ConsoleKeyInfo key = Console.ReadKey();
+            
+            stringToLeapYear();
             Console.ReadKey();
 
+
+        }
+        static void stringToLeapYear()
+        {
+
+            printInfo();
+           
+            string userString = Console.ReadLine();
+            string[] years = userString.Split(' ');
+
+            for (int i = 0; i < years.Length; i++)
+            {
+                Console.Write($"{isLeapYear(int.Parse(years[i]))} "); 
+            }
+
+            
+        }
+        static bool LeapYearCalc(int year)
+        {
+            bool leapYear = true;
+            
+            if (year % 4 == 0 )
+            {
+                  
+                if(year % 100 == 0)
+                {
+                    if (year % 400 == 0)
+                    {
+                        leapYear = true;
+                    }
+                    else leapYear = false;
+                }else
+                {
+                    leapYear = true;
+                    
+                }
+            }
+            
+            else leapYear = false;
+            
+
+            return leapYear;
+
+        }
+        static void printInfo()
+        {
+            Console.ForegroundColor = ConsoleColor.White; 
+            Console.WriteLine("Enter a Year:");
+
+        }
+        static string isLeapYear(int year)
+        {
+            LeapYearCalc(year);
+
+            if (LeapYearCalc(year) == true)
+            {
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                return $"{year}";
+            }
+            else
+
+                Console.ForegroundColor = ConsoleColor.Blue;
+            return $"{year}";
         }
         static void Pandemic()
         {
-            
-            
+
+
             int infected = 0;
             int immune = 0;
             int random = rnd.Next(1, 10);
             var disco = new List<Person>();
             int currentTime = 0;
-            
 
-            for (int i  = 1; i <= 10; i ++) //Skapar Discotek med 1 smittad.
+
+            for (int i = 0; i < 10; i++) //Skapar Discotek med 1 smittad.
             {
-                if(i == random)
+                if (i == 0)
                 {
                     Person person = new Person();
                     person.infected = true;
@@ -39,16 +102,17 @@ namespace Collections
                     person.id = i;
                     disco.Add(person);
                 }
-                else { 
+                else
+                {
                     Person person = new Person();
                     person.infected = false;
                     person.timeOfInfection = currentTime;
                     person.immune = false;
                     person.id = i;
                     disco.Add(person);
-                     
+
                 }
-                
+
             }
 
             int numSpread = 0; //Numspread för kontroll av att den itererar igenom personerna
@@ -56,7 +120,7 @@ namespace Collections
             {
                 Console.ReadKey();
                 Console.Clear();
-               
+
                 //(infected - immune) *2 formel för smittspridning blir indexOutofBounds
 
 
@@ -75,28 +139,26 @@ namespace Collections
 
                     }
                     Console.WriteLine($" Infected: {p.infected} | Immune: {p.immune} |  id: {p.id}");
-                    
+
                 }
                 if (infected < 0)
                 {
                     infected = 0;
                 }
-                
+
                 //int randomSpread = rnd.Next(disco.Count); //användsenare när jag kan randomisera utan att den väljer samma
-                if (infected == 2 || immune <=10)
-                {
-                    if (disco[numSpread].immune == false && disco[numSpread].infected == false) //Sprider för tillfället viruset vidare till nästa person i diskot, 1 per timme 
-                    {                                                                           //vilkoret används mest som kontroll
-                        disco[numSpread].infected = true;
-                        disco[numSpread].timeOfInfection = currentTime;
-                        infected++;
-                    }
+                if (disco[numSpread].immune == false && disco[numSpread].infected == false) //Sprider för tillfället viruset vidare till nästa person i diskot, 1 per timme 
+                {                                                                           //vilkoret används mest som kontroll
+                    disco[numSpread].infected = true;
+                    disco[numSpread].timeOfInfection = currentTime;
+                    infected++;
                 }
+
                 Console.WriteLine();
                 Console.WriteLine($"Infected: {infected} | Hours Elapsed: {currentTime} | Immune: {immune} ");
                 currentTime++;
                 numSpread++;
-                
+
             }
         }
         static List<Animals> animalcreator()
@@ -116,7 +178,7 @@ namespace Collections
             horse.nocturnal = false;
 
             Animals delfin = new Animals();
-            delfin.name = "delfinen";
+            delfin.name = "Delfinen";
             delfin.nocturnal = false;
 
             Animals örn = new Animals();
@@ -128,43 +190,83 @@ namespace Collections
             theForest.Add(horse);
             theForest.Add(örn);
             theForest.Add(delfin);
-            
+
             return theForest;
         }
         static void Djuren()
         {
-            List<Animals> forest = animalcreator();
-
-            foreach (var f in forest)
+            bool active = true;
+            while (active)
             {
-                if(f.nocturnal == true && f.name.Equals("Vargen"))
+                Console.WriteLine();
+                List<Animals> forest = animalcreator();
+                Console.WriteLine($"Press 'd' for daymode 'n'for nightmode or 'q' to quit");
+                ConsoleKeyInfo key = Console.ReadKey();
+                Console.Clear();
+                switch (key.KeyChar)
                 {
-                    Console.Write($"{f.name} smyger omkring och letar efter sitt byte och ");
-                } else if(f.nocturnal == true && f.name.Equals("Fladdermusen"))
-                {
-                    Console.WriteLine($"{f.name} flyger runt bland träden I jakt på mat"); 
-                } else
-                    Console.WriteLine($"{f.name} sover. ");
+                    case 'n':
+                        foreach (var f in forest)
+                        {
+                            if (f.nocturnal == true && f.name.Equals("Vargen"))
+                            {
+                                Console.Write($"{f.name} smyger omkring och letar efter sitt byte och ");
+                            }
+                            else if (f.nocturnal == true && f.name.Equals("Fladdermusen"))
+                            {
+                                Console.WriteLine($"{f.name} flyger runt bland träden I jakt på mat");
+                            }
+                            else
+                                Console.WriteLine($"{f.name} sover djupt. ");
+
+                        }
+                        break;
+                    case 'd':
+
+                        foreach (var f in forest)
+                        {
+                            if (f.nocturnal == false && f.name.Equals("Örnen"))
+                            {
+                                Console.WriteLine($"{f.name} flyger runt o spejar I jakt på mat");
+                            }
+                            else if (f.nocturnal == false && f.name.Equals("Hästen"))
+                            {
+                                Console.WriteLine($"{f.name} går omkring och betar");
+                            }
+                            else if (f.nocturnal == false && f.name.Equals("Delfinen"))
+                            {
+                                Console.WriteLine($"{f.name} simmar runt o äter fisk");
+                            }
+                            else if (f.nocturnal == true)
+                            {
+                                Console.WriteLine($"{f.name} sover");
+                            }
+                        }
+                        break;
+                    case 'q':
+                        active = false;
+                        break;
+                }
 
             }
 
+
+
         }
+        class Person
+        {
+            public bool infected { get; set; }
+            public int timeOfInfection { get; set; }
+            public bool immune { get; set; }
+            public int id { get; set; }
 
-            
+        }
+        class Animals
+        {
+            public string name { get; set; }
+            public bool nocturnal { get; set; }
 
-    }
-    class Person
-    {
-        public bool infected { get; set; }
-        public int timeOfInfection { get; set; }
-        public  bool immune { get; set; }
-        public int id { get; set; }
-
-    }
-    class Animals
-    {
-        public string name { get; set; }
-        public bool nocturnal { get; set; }
-
+        }
+        
     }
 }
